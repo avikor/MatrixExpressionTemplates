@@ -43,8 +43,6 @@ namespace met
 		{
 			return static_cast<const Expression&>(*this).size();
 		}
-
-		virtual ~MatrixExpression() = default;
 	};
 
 
@@ -67,7 +65,7 @@ namespace met
 
 		Matrix& operator=(Matrix&& other) noexcept = delete;
 
-		// move assignment replacement
+		// move assignment alternative
 		// since we throw an exception if other has different Matrixsize
 		void steal(Matrix&& other) noexcept(false);
 
@@ -133,7 +131,7 @@ namespace met
 	template <std::semiregular T>
 	Matrix<T>::Matrix(const MatrixSize matSize)
 		: matSize_{ matSize }
-		, arr_{ (matSize_.rows != 0 && matSize_.cols != 0) ? new T[matSize_.rows * matSize_.cols] : nullptr }
+		, arr_{ (matSize_.rows == 0 || matSize_.cols == 0) ? nullptr : new T[matSize_.rows * matSize_.cols] }
 	{ }
 
 	template <std::semiregular T>
