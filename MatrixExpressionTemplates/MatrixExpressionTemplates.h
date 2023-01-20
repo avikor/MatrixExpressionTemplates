@@ -10,8 +10,8 @@ namespace met
 {
 	struct MatrixSize
 	{
-		int rows;
-		int cols;
+		int rows{ 0 };
+		int cols{ 0 };
 	};
 
 	// copy by value since sizeof(MatrixSize) is small
@@ -74,7 +74,7 @@ namespace met
 		Matrix& operator=(Matrix&& other) noexcept = delete;
 
 		// move assignment alternative
-		// since we throw an exception if other has different Matrixsize
+		// since we throw an exception if other has a different Matrixsize
 		void steal(Matrix&& other) noexcept(false);
 
 		~Matrix();
