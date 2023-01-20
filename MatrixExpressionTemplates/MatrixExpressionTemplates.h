@@ -29,6 +29,12 @@ namespace met
 		{ }
 	};
 
+	template<typename T, typename Expression>
+	concept ExpressionConcept = requires(const Expression& expression, const int row, const int col)
+	{
+		{ expression.size() } -> std::same_as<MatrixSize>;
+		{ expression(row, col) } -> std::same_as<T>;
+	};
 
 	template <std::semiregular T, typename Expression>
 	class MatrixExpression
@@ -53,9 +59,11 @@ namespace met
 		explicit Matrix(const MatrixSize matSize);
 		
 		template <typename Expression>
+			requires ExpressionConcept<T, Expression>
 		Matrix(const MatrixExpression<T, Expression>& matrixExpr);
 
 		template <typename Expression>
+			requires ExpressionConcept<T, Expression>
 		Matrix& operator=(const MatrixExpression<T, Expression>& matrixExpr) noexcept(false);
 
 		Matrix(const Matrix& other);
@@ -89,6 +97,7 @@ namespace met
 
 
 		template <typename Expression>
+			requires ExpressionConcept<T, Expression>
 		void assign_from_mat_expression(const MatrixExpression<T, Expression>& matrixExpr);
 	};
 
@@ -117,6 +126,7 @@ namespace met
 
 	template <std::semiregular T>
 	template<typename Expression>
+		requires ExpressionConcept<T, Expression>
 	void Matrix<T>::assign_from_mat_expression(const MatrixExpression<T, Expression>& matrixExpr)
 	{
 		for (int row{ 0 }; row != matSize_.rows; ++row)
@@ -136,6 +146,7 @@ namespace met
 
 	template <std::semiregular T>
 	template<typename Expression>
+		requires ExpressionConcept<T, Expression>
 	Matrix<T>::Matrix(const MatrixExpression<T, Expression>& matrixExpr)
 		: Matrix<T>{ matrixExpr.size() }
 	{
@@ -144,6 +155,7 @@ namespace met
 
 	template <std::semiregular T>
 	template<typename Expression>
+		requires ExpressionConcept<T, Expression>
 	Matrix<T>& Matrix<T>::operator=(const MatrixExpression<T, Expression>& matrixExpr) noexcept(false)
 	{
 		if (size() != matrixExpr.size()) [[unlikely]]
@@ -242,6 +254,7 @@ namespace met
 	}
 
 	template <std::semiregular T, typename Expression>
+		requires ExpressionConcept<T, Expression>
 	class MatrixTranspose : public MatrixExpression<T, MatrixTranspose<T, Expression>>
 	{
 	public:
@@ -267,6 +280,7 @@ namespace met
 	};
 
 	template <std::semiregular T, typename Expression>
+		requires ExpressionConcept<T, Expression>
 	MatrixTranspose<T, Expression> transpose(const MatrixExpression<T, Expression>& matExpr)
 	{
 		return MatrixTranspose<T, Expression>{ static_cast<const Expression&>(matExpr) };
@@ -274,6 +288,7 @@ namespace met
 
 
 	template <std::semiregular T, typename Expression1, typename Expression2>
+		requires ExpressionConcept<T, Expression1> && ExpressionConcept<T, Expression2>
 	class MatrixAdd : public MatrixExpression<T, MatrixAdd<T, Expression1, Expression2>>
 	{
 	public:
@@ -303,6 +318,7 @@ namespace met
 	};
 
 	template <std::semiregular T, typename Expression1, typename Expression2>
+		requires ExpressionConcept<T, Expression1>&& ExpressionConcept<T, Expression2>
 	MatrixAdd<T, Expression1, Expression2> operator+(
 		const MatrixExpression<T, Expression1>& matExpr1, 
 		const MatrixExpression<T, Expression2>& matExpr2
