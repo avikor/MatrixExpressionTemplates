@@ -199,14 +199,14 @@ TEST_CASE("operator+")
 	met::Matrix<int> mat2{ matSize };
 	mat2.fill(6);
 
-	auto view = mat1 + mat1 + mat2;
-	met::MatrixSize viewSize{ view.size() };
+	auto calcResMatView = mat1 + mat1 + mat2;
+	met::MatrixSize viewSize{ calcResMatView.size() };
 
 	for (int i{ 0 }; i != viewSize.rows; ++i)
 	{
 		for (int j{ 0 }; j != viewSize.cols; ++j)
 		{
-			REQUIRE(view(i, j) == mat1(i, j) + mat1(i, j) + mat2(i, j));
+			REQUIRE(calcResMatView(i, j) == mat1(i, j) + mat1(i, j) + mat2(i, j));
 		}
 	}
 
