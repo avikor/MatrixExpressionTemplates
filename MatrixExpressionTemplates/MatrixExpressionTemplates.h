@@ -47,12 +47,12 @@ namespace met
 	class MatrixExpression
 	{
 	public:
-		T operator()(int row, int col) const noexcept
+		[[nodiscard]] T operator()(int row, int col) const noexcept
 		{
 			return static_cast<const Expression&>(*this)(row, col);
 		}
 
-		MatrixSize size() const noexcept
+		[[nodiscard]] MatrixSize size() const noexcept
 		{
 			return static_cast<const Expression&>(*this).size();
 		}
