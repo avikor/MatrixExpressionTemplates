@@ -36,13 +36,9 @@ TEST_CASE("fill")
 
 TEST_CASE("isEmpty")
 {
-	constexpr met::MatrixSize zeroMatSize{ 0, 0 };
 	constexpr met::MatrixSize matSize{ 3, 4 };
 	met::Matrix<int> mat1{ matSize };
 	REQUIRE(!mat1.isEmpty());
-
-	met::Matrix<int> mat2{ zeroMatSize };
-	REQUIRE(mat2.isEmpty());
 }
 
 TEST_CASE("range-for")

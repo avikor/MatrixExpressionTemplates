@@ -20,6 +20,13 @@ namespace met
 		return left.rows == right.rows && left.cols == right.cols;
 	}
 
+	class empty_matrix_allocation_exception : public std::invalid_argument
+	{
+	public:
+		empty_matrix_allocation_exception()
+			: std::invalid_argument{ "cannot allocate an empty matrix." }
+		{ }
+	};
 
 	class mat_expers_size_diff_exception : public std::invalid_argument
 	{
@@ -34,7 +41,7 @@ namespace met
 	{
 		{ expression.size() } -> std::same_as<MatrixSize>;
 		{ expression(row, col) } -> std::same_as<T>;
-	};
+	}; // && std::semiregular<T> // if you want to check T is semiregular, but we always do this outside this scope
 
 	template <std::semiregular T, typename Expression>
 	class MatrixExpression
@@ -142,7 +149,12 @@ namespace met
 	Matrix<T>::Matrix(const MatrixSize matSize)
 		: matSize_{ matSize }
 		, arr_{ (matSize_.rows == 0 || matSize_.cols == 0) ? nullptr : new T[matSize_.rows * matSize_.cols] }
-	{ }
+	{
+		if (matSize_.rows == 0 || matSize_.cols == 0) [[unlikely]]
+		{
+			throw empty_matrix_allocation_exception{};
+		}
+	}
 
 	template <std::semiregular T>
 	template<typename Expression>
