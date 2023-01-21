@@ -15,6 +15,9 @@ TEST_CASE("size")
 
 	met::MatrixSize matSizeRes2{ std::size(mat0) };
 	REQUIRE(matSize0 == matSizeRes2);
+
+	constexpr met::MatrixSize emptyMatSize{ 0, 0 };
+	REQUIRE_THROWS_AS(met::Matrix<double>{ emptyMatSize }, met::empty_matrix_allocation_exception);
 }
 
 TEST_CASE("fill")
