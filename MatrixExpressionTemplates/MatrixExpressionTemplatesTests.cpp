@@ -206,7 +206,14 @@ TEST_CASE("operator+")
 	{
 		for (int j{ 0 }; j != viewSize.cols; ++j)
 		{
+
+			// for some reason GCC doesn't like catch2's require
+#if _MSC_VER
 			REQUIRE(calcResMatView(i, j) == mat1(i, j) + mat1(i, j) + mat2(i, j));
+#else
+			assert(calcResMatView(i, j) == mat1(i, j) + mat1(i, j) + mat2(i, j));
+#endif
+		
 		}
 	}
 

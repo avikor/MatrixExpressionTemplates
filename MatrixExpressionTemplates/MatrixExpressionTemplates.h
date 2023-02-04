@@ -15,7 +15,7 @@ namespace met
 	};
 
 	// copy by value since sizeof(MatrixSize) is small
-	bool operator==(const MatrixSize left, const MatrixSize right)
+	constexpr bool operator==(const MatrixSize left, const MatrixSize right)
 	{
 		return left.rows == right.rows && left.cols == right.cols;
 	}
@@ -63,7 +63,7 @@ namespace met
 	class Matrix : public MatrixExpression<T, Matrix<T>>
 	{
 	public:
-		explicit Matrix(const MatrixSize matSize);
+		explicit Matrix(MatrixSize matSize);
 		
 		template <typename Expression>
 			requires MatExpressionConcept<T, Expression>
@@ -146,8 +146,8 @@ namespace met
 	}
 
 	template <std::semiregular T>
-	Matrix<T>::Matrix(const MatrixSize matSize)
-		: matSize_{ matSize }
+	Matrix<T>::Matrix(MatrixSize matSize)
+		: matSize_{ std::move(matSize) }
 		, arr_{ (matSize_.rows == 0 || matSize_.cols == 0) ? nullptr : new T[matSize_.rows * matSize_.cols] }
 	{
 		if (matSize_.rows == 0 || matSize_.cols == 0) [[unlikely]]
@@ -233,13 +233,13 @@ namespace met
 	}
 
 	template <std::semiregular T>
-	T  Matrix<T>::operator()(const int i, const int j) const noexcept
+	T Matrix<T>::operator()(const int i, const int j) const noexcept
 	{
 		return arr_[matSize_.cols * i + j];
 	}
 
 	template <std::semiregular T>
-	T&  Matrix<T>::operator()(const int i, const int j) noexcept
+	T& Matrix<T>::operator()(const int i, const int j) noexcept
 	{
 		return arr_[matSize_.cols * i + j];
 	}
@@ -274,7 +274,7 @@ namespace met
 			: exper_{ exper }
 		{ }
 
-		T operator()(const int row, const int col) const noexcept 
+		T operator()(const int row, const int col) const noexcept
 		{ 
 			return exper_(col, row); 
 		}
